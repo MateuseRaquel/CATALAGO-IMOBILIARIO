@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imobiliária Mateus Trevisol</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
+        header { background-color: #1a252f; color: white; text-align: center; padding: 25px 15px; }
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        
+        .filtros { display: flex; gap: 8px; margin-bottom: 20px; }
+        .btn-filtro { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; background: #3498db; color: white; font-weight: bold; }
+
+        /* Container da Galeria Relativo para os botões ficarem em cima */
+        .galeria-wrapper { position: relative; width: 100%; height: 250px; }
+
+        .galeria { 
+            display: flex; 
+            overflow-x: auto; 
+            scroll-snap-type: x mandatory; 
+            scroll-behavior: smooth; /* Faz o deslize ser suave ao clicar */
+            gap: 0; 
+            height: 100%;
+        }
+        .galeria img { flex-shrink: 0; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start; }
+        .galeria::-webkit-scrollbar { display: none; }
+
+        /* Botões de Navegação */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 18px;
+            z-index: 10;
+        }
+        .btn-prev { left: 10px; }
+        .btn-next { right: 10px; }
+
+        .card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .card-content { padding: 18px; }
+        .status { font-size: 0.75em; font-weight: bold; padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 12px; background: #d4edda; color: #155724; }
+        .preco { font-size: 1.4em; color: #2c3e50; font-weight: 800; margin: 15px 0; }
+        .btn-whatsapp { display: block; background-color: #25d366; color: white; text-align: center; padding: 15px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        .aviso-foto { font-size: 0.7em; color: #999; text-align: center; padding: 5px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Mateus Trevisol</h1>
+    <p>Consultoria Imobiliária</p>
+</header>
+
+<div class="container">
+    <div class="filtros">
+        <button class="btn-filtro" onclick="filtrar('Anual')">Anual</button>
+        <button class="btn-filtro" onclick="filtrar('Temporada')">Temporada</button>
+        <button class="btn-filtro" onclick="filtrar('Todos')">Todos</button>
+    </div>
+
+    <div id="lista-imoveis"></div>
+</div>
+
+<script>
+    const meuWhatsapp = "5547996414535";
+
+    const imoveis = [
+        {
+            id: "imovel1",
+            titulo: "Kitnet Container",
+            tipo: "Anual",
+            preco: "R$ 1.500,00 / mês",
+            fotos: [
+                "https://br.freepik.com/fotos-gratis/closeup-tiro-de-uma-linda-borboleta-com-texturas-interessantes-em-uma-flor-de-petalas-de-laranja_9183672.htm#fromView=keyword&page=1&position=2&uuid=8cd2cd8f-56e5-4775-bc9a-eb82b6950b5e&query=Images",
+                "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=500",
+                "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=500"
+            ]
+        }
+    ];
+
+    function mostrarImoveis(lista) {
+        const container = document.getElementById('lista-imoveis');
+        container.innerHTML = '';
+
+        lista.forEach((imovel, index) => {
+            let fotosHTML = imovel.fotos.map(f => `<img src="${f}">`).join('');
+            const galeriaId = `galeria-${index}`;
+
+            container.innerHTML += `
+                <div class="card">
+                    <div class="galeria-wrapper">
+                        <button class="nav-btn btn-prev" onclick="scrollGaleria('${galeriaId}', -1)">&#10094;</button>
+                        <div class="galeria" id="${galeriaId}">
+                            ${fotosHTML}
+                        </div>
+                        <button class="nav-btn btn-next" onclick="scrollGaleria('${galeriaId}', 1)">&#10095;</button>
+                    </div>
+                    <div class="aviso-foto">Arraste ou use as setas para ver fotos</div>
+                    <div class="card-content">
+                        <span class="status">Disponível</span>
+                        <h3>${imovel.titulo}</h3>
+                        <p class="preco">${imovel.preco}</p>
+                        <a href="https://wa.me/${meuWhatsapp}?text=Interesse no ${imovel.titulo}" class="btn-whatsapp">Chamar no WhatsApp</a>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Função para mover a galeria
+    function scrollGaleria(id, direcao) {
+        const el = document.getElementById(id);
+        const larguraCard = el.offsetWidth;
+        el.scrollBy({ left: direcao * larguraCard, behavior: 'smooth' });
+    }
+
+    function filtrar(tipo) {
+        if (tipo === 'Todos') mostrarImoveis(imoveis);
+        else mostrarImoveis(imoveis.filter(i => i.tipo === tipo));
+    }
+
+    mostrarImoveis(imoveis);
+</script>
+</body>
+</html>
